@@ -45,25 +45,29 @@ namespace A_Game
         {
             // Гравитация всегда действует
             _position.Y += _gravity;
+            //Обработчик нажатий (передвижение)
+            InputHandler(input, holdingInputs);
+            
+        }
 
-            // Прыжок: если клавиша "Space" нажата и персонаж не находится в состоянии прыжка
+        private void InputHandler(Key? input, Dictionary<Key, bool> holdingInputs)
+        {
             if (input == Key.Space && !isJumping)
             {
                 Jump();
             }
-
             // Движение влево: клавиша "A" удерживается
             if (holdingInputs.ContainsKey(Key.A) && holdingInputs[Key.A])
             {
                 _position.X -= moveSpeed;
             }
-
             // Движение вправо: клавиша "D" удерживается
             if (holdingInputs.ContainsKey(Key.D) && holdingInputs[Key.D])
             {
                 _position.X += moveSpeed;
             }
         }
+
         private async void Jump() => await Task.Run(() =>DoJump());
 
         private async void DoJump()
@@ -82,7 +86,8 @@ namespace A_Game
                 _gravity -= _jumpScale;
                 await Task.Delay(16);
             }
-            isJumping = false ;
+
+            isJumping = false;
         }
     }
 }
