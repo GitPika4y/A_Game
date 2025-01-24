@@ -31,6 +31,16 @@ namespace A_Game.Classes
         public void AddGameObjects(params IGameObject[] gameObjects)
         {
             _gameObjects.AddRange(gameObjects);
+            ChildrenAddGameObjects();
+        }
+
+        private void ChildrenAddGameObjects()
+        {
+            foreach (var Object in _gameObjects)
+            {
+                if(Instance.Children.Contains(Object.GameObject) == false)
+                    Instance.Children.Add(Object.GameObject);
+            }
         }
 
         public void UpdateCanvas()
@@ -40,8 +50,6 @@ namespace A_Game.Classes
                 Canvas.SetLeft(Object.GameObject, Object.Position.X);
                 Canvas.SetBottom(Object.GameObject, Object.Position.Y);
             }
-
-            // Устанавливаем координаты игрока так, чтобы он оказался по центру Canvas
         }
         public void UpdateCanvasCentre()
         {

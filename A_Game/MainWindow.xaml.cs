@@ -26,7 +26,7 @@ namespace A_Game
         //Объекты
         private CanvasParameters _canvas;
         private Player _player;
-        private Camera _camera;
+        private Camera _camera; // TODOTODOTODTODOTDOTODTODTOTDOTOTDOTDOTDO
         private DispatcherTimer _timer;
 
 
@@ -49,8 +49,8 @@ namespace A_Game
         {
             InitializeObjects();
             InitializeTimer();
-            // Инициализировать центр Canvas,объекты,таймер после загрузки окна
         }
+
         private void InitializeObjects()
         {
 
@@ -62,22 +62,20 @@ namespace A_Game
 
             _inputHandlers.Add(_player);
             _updateHandlers.AddRange(new List<IUpdateHandler> { _player, _camera, _canvas});
-
-            Canvas.Children.Add(_player.GameObject); 
         }
 
         private void InitializeTimer()
         {
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(16);// ~ 60 FPS
-            _timer.Tick += Update;
+            _timer.Tick += UpdateAll;
             _timer.Start();
         }
 
 
 
         //Handlers methods
-        private void Update(object sender, EventArgs e)
+        private void UpdateAll(object sender, EventArgs e)
         {
             foreach(var handler in _updateHandlers)
             {

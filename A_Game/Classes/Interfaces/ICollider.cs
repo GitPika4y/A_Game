@@ -15,6 +15,5 @@ namespace A_Game.Classes.Interfaces
 
         bool CheckCollision (ICollider other);
         void OnCollision(ICollider other);
-
     }
 }

@@ -54,9 +54,8 @@ namespace A_Game.Classes
         {
             // Гравитация всегда действует
             _position.Y += _gravity;
-            //Обработчик нажатий (передвижение)
+            //Обработчик нажатий (передвижение, прыжок)
             HandleMovement();
-            
         }
 
         private void HandleMovement()
@@ -99,6 +98,8 @@ namespace A_Game.Classes
             isJumping = false;
         }
 
+
+        //Inputs Methods (from IInputHandler)
         public void OnKeyDown(Key key)
         {
             _input = key;
