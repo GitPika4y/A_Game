@@ -1,4 +1,5 @@
-﻿using System;
+﻿using A_Game.Classes.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,39 +14,58 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using A_Game.Classes;
 
 namespace A_Game
 {
     public partial class MainWindow : Window
     {
-        //ОБъекты
-        private Canvas _canvas;
+
+        //Основная логика игры, Canvas, handlers, gameobjects, timer, старт игры инициализация объектов
+
+        //Объекты
+        private CanvasParameters _canvas;
         private Player _player;
-        private Vector _canvasCentre;
-        //Доп.Элементы
+        private Camera _camera;
         private DispatcherTimer _timer;
-        private Key? _input;
-        private Dictionary<Key, bool> _holdingInputs = new Dictionary<Key, bool>()
-            {   
-                [Key.D] = false,
-                [Key.A] = false
-            };
 
 
+        //Доп.Элементы
+        private string _playerImgPath= "D:/asesprite_Img/My first Game(Dream)/Img/Player_Idle.png";
+
+
+        //Handlers
+        private List<IInputHandler> _inputHandlers = new List<IInputHandler>();
+        private List<IUpdateHandler> _updateHandlers = new List<IUpdateHandler>();
+
+        
+        //Инициализация всего
         public MainWindow()
         {
             InitializeComponent();
-            
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitializeObjects();
+            InitializeTimer();
+            // Инициализировать центр Canvas,объекты,таймер после загрузки окна
         }
         private void InitializeObjects()
         {
-            _player = new Player(GetImage("D:/asesprite_Img/My first Game(Dream)/Img/Player_Idle.png"),
-                _canvasCentre);
-            Canvas.Children.Add(_player.gameObject);
 
+            _canvas = new CanvasParameters(Canvas);
+            _player = new Player(_playerImgPath.GetImageSource(), _canvas.Center);
+            _camera = new Camera(_player, _canvas);
 
-            UpdateCanvas();
+            _canvas.AddGameObjects(_player);
+
+            _inputHandlers.Add(_player);
+            _updateHandlers.AddRange(new List<IUpdateHandler> { _player, _camera, _canvas});
+
+            Canvas.Children.Add(_player.GameObject); 
         }
+
         private void InitializeTimer()
         {
             _timer = new DispatcherTimer();
@@ -53,74 +73,31 @@ namespace A_Game
             _timer.Tick += Update;
             _timer.Start();
         }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Инициализировать центр Canvas,объекты,таймер после загрузки окна
-            UpdateCanvasCentre();
-            InitializeObjects();
-            InitializeTimer();
-        }
-        private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            // Обновлять центр Canvas при изменении его размеров
-            _canvas = Canvas;
-            UpdateCanvasCentre();
-        }
 
 
 
+        //Handlers methods
         private void Update(object sender, EventArgs e)
         {
-            UpdateCanvas();
-            _player.Update(_input, _holdingInputs);
-
-            _input = null;
-        }
-        private void UpdateCanvas()
-        {
-            // Устанавливаем координаты игрока так, чтобы он оказался по центру Canvas
-            Canvas.SetLeft(_player.gameObject, _player.position.X);
-            Canvas.SetBottom(_player.gameObject, _player.position.Y);
-        }
-        private void UpdateCanvasCentre()
-        {
-            // Убедитесь, что размеры доступны
-            if (_canvas.ActualWidth > 0 && _canvas.ActualHeight > 0)
+            foreach(var handler in _updateHandlers)
             {
-                _canvasCentre = new Vector(_canvas.ActualWidth / 2, _canvas.ActualHeight / 2);
+                handler?.Update();
             }
-        }
-
-
-        private ImageSource GetImage(string imgPath)
-        {
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(imgPath, UriKind.Absolute); // Путь к файлу
-            bitmap.EndInit();
-            return bitmap;
         }
         private void InputGetKeyDown(object sender, KeyEventArgs e)
         {
-            _input = e.Key;
-            if (_holdingInputs.ContainsKey(e.Key))
+            foreach(var handler in _inputHandlers)
             {
-                _holdingInputs[e.Key] = true;
+                handler?.OnKeyDown(e.Key);
             }
         }
         private void InputGetKeyUp(object sender, KeyEventArgs e)
         {
-            _input = e.Key;
-            if (_holdingInputs.ContainsKey(e.Key))
+            foreach(var handler in _inputHandlers)
             {
-                _holdingInputs[e.Key] = false;
+                handler?.OnKeyUp(e.Key);
             }
         }
-
-
-
-
-
 
     }
 }

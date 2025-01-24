@@ -1,4 +1,5 @@
-﻿using System;
+﻿using A_Game.Classes.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +11,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shell;
 
-namespace A_Game
+namespace A_Game.Classes
 {
-    internal class Player
+    internal class Player: IInputHandler, IUpdateHandler, IGameObject
     {
-        public Image gameObject => _gameObject;
-        public Vector position => _position;
+        public Image GameObject => _gameObject;
+        public Vector Position => _position;
 
 
         private Image _gameObject;
@@ -31,6 +32,14 @@ namespace A_Game
         //Ходьба
         private float moveSpeed = 5;
 
+        //Inputs
+        private Key? _input;
+        private Dictionary<Key, bool> _holdingInputs = new Dictionary<Key, bool>()
+        {
+            [Key.D] = false,
+            [Key.A] = false
+        };
+
         public Player(ImageSource gameObject, Vector startPosition)
         {
             _gameObject = new Image {
@@ -41,28 +50,28 @@ namespace A_Game
 
             _position = startPosition;
         }
-        public void Update(Key? input, Dictionary<Key, bool> holdingInputs)
+        public void Update()
         {
             // Гравитация всегда действует
             _position.Y += _gravity;
             //Обработчик нажатий (передвижение)
-            InputHandler(input, holdingInputs);
+            HandleMovement();
             
         }
 
-        private void InputHandler(Key? input, Dictionary<Key, bool> holdingInputs)
+        private void HandleMovement()
         {
-            if (input == Key.Space && !isJumping)
+            if (_input == Key.Space && !isJumping)
             {
                 Jump();
             }
             // Движение влево: клавиша "A" удерживается
-            if (holdingInputs.ContainsKey(Key.A) && holdingInputs[Key.A])
+            if (_holdingInputs[Key.A])
             {
                 _position.X -= moveSpeed;
             }
             // Движение вправо: клавиша "D" удерживается
-            if (holdingInputs.ContainsKey(Key.D) && holdingInputs[Key.D])
+            if (_holdingInputs[Key.D])
             {
                 _position.X += moveSpeed;
             }
@@ -88,6 +97,26 @@ namespace A_Game
             }
 
             isJumping = false;
+        }
+
+        public void OnKeyDown(Key key)
+        {
+            _input = key;
+
+            if (_holdingInputs.ContainsKey(key))
+            {
+                _holdingInputs[key] = true;
+            }
+        }
+
+        public void OnKeyUp(Key key)
+        {
+            _input = null;
+
+            if (_holdingInputs.ContainsKey(key))
+            {
+                _holdingInputs[key] = false;
+            }
         }
     }
 }

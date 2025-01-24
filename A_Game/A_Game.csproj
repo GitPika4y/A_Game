@@ -63,7 +63,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\Camera.cs" />
+    <Compile Include="Classes\CanvasParameters.cs" />
+    <Compile Include="Classes\Interfaces\IGameObject.cs" />
+    <Compile Include="Classes\Interfaces\ICollider.cs" />
+    <Compile Include="Classes\Interfaces\IUpdateHandler.cs" />
+    <Compile Include="Classes\Interfaces\IInputHandler.cs" />
     <Compile Include="Classes\Player.cs" />
+    <Compile Include="ExtensionsMethods\Extensions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -11,13 +11,10 @@
         PreviewKeyUp="InputGetKeyUp"
         >
     <Grid>
-        <Border BorderThickness="5"
-                BorderBrush="Black"
-                Margin="10">
-            <Canvas
+
+        <Canvas
                 x:Name="Canvas"
-                SizeChanged="Canvas_SizeChanged"
+                
                 />
-        </Border>
     </Grid>
 </Window>
