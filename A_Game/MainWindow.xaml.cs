@@ -15,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using A_Game.Classes;
+using A_Game.Classes.Platforms;
+
 
 namespace A_Game
 {
@@ -26,19 +28,21 @@ namespace A_Game
         //Объекты
         private CanvasParameters _canvas;
         private Player _player;
-        private Camera _camera; // TODOTODOTODTODOTDOTODTODTOTDOTOTDOTDOTDO
+        private Platform _platform;
         private DispatcherTimer _timer;
 
-
         //Доп.Элементы
-        private string _playerImgPath= "D:/asesprite_Img/My first Game(Dream)/Img/Player_Idle.png";
+        private string _mainImgPath = "D:/_GitHubData/A_Game/sprites/";
+        private string _playerImgName = "Player.png";
+        private string _platformImgName = "Platform.png";
 
 
-        //Handlers
+        //Lists
         private List<IInputHandler> _inputHandlers = new List<IInputHandler>();
         private List<IUpdateHandler> _updateHandlers = new List<IUpdateHandler>();
+        private List<IGameObject> _gameObjects = new List<IGameObject>();
+        private List<ICollider> _colliders = new List<ICollider>();
 
-        
         //Инициализация всего
         public MainWindow()
         {
@@ -50,20 +54,6 @@ namespace A_Game
             InitializeObjects();
             InitializeTimer();
         }
-
-        private void InitializeObjects()
-        {
-
-            _canvas = new CanvasParameters(Canvas);
-            _player = new Player(_playerImgPath.GetImageSource(), _canvas.Center);
-            _camera = new Camera(_player, _canvas);
-
-            _canvas.AddGameObjects(_player);
-
-            _inputHandlers.Add(_player);
-            _updateHandlers.AddRange(new List<IUpdateHandler> { _player, _camera, _canvas});
-        }
-
         private void InitializeTimer()
         {
             _timer = new DispatcherTimer();
@@ -71,6 +61,28 @@ namespace A_Game
             _timer.Tick += UpdateAll;
             _timer.Start();
         }
+
+        private void InitializeObjects()
+        {
+            _canvas = new CanvasParameters(Canvas);
+
+            _player = new Player(_mainImgPath.GetImageSource(_playerImgName),
+                _canvas.Center);
+            _platform = new Platform(_mainImgPath.GetImageSource(_platformImgName),
+                new Vector(_canvas.Center.X, 30));
+
+
+
+            _inputHandlers.Add(_player);
+            _updateHandlers.AddRange(new List<IUpdateHandler> { _player, _canvas,});
+            _gameObjects.AddRange(new List<IGameObject> {_player, _platform,});
+            _colliders.AddRange(new List<ICollider> {_player, _platform});
+
+            CollisionControl.Colliders = _colliders;
+
+            _canvas.AddGameObjects(_gameObjects);
+        }
+
 
 
 
@@ -81,6 +93,7 @@ namespace A_Game
             {
                 handler?.Update();
             }
+
         }
         private void InputGetKeyDown(object sender, KeyEventArgs e)
         {
@@ -96,6 +109,5 @@ namespace A_Game
                 handler?.OnKeyUp(e.Key);
             }
         }
-
     }
 }

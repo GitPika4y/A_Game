@@ -6,28 +6,33 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using  System.Windows.Controls;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shell;
 
 namespace A_Game.Classes
 {
-    internal class Player: IInputHandler, IUpdateHandler, IGameObject
+    internal class Player : IInputHandler, IUpdateHandler, IGameObject, ICollider
     {
         public Image GameObject => _gameObject;
         public Vector Position => _position;
+        public Dictionary<string, double> ColliderBounds => _colliderBounds;
 
 
+        //Interfaces realisation
         private Image _gameObject;
         private Vector _position;
+        private CollisionControl _collisionControl;
+        private Dictionary<string, double> _colliderBounds;
 
         //Прыжок
+        public bool IsOnGround = false;
         private static readonly float _gravityDefault = -9.8f;
         private float _gravity = _gravityDefault;
         private float _jumpScale = 2;
-        private float _maxJumpForce = 16;
-        private bool isJumping = false;
+        private float _maxJumpForce = 20;
+        private bool _isJumping = false;
 
         //Ходьба
         private float moveSpeed = 5;
@@ -42,25 +47,49 @@ namespace A_Game.Classes
 
         public Player(ImageSource gameObject, Vector startPosition)
         {
-            _gameObject = new Image {
+            _position = startPosition;
+            _gameObject = new Image
+            {
                 Source = gameObject,
                 Width = gameObject.Width,
                 Height = gameObject.Height,
             };
 
-            _position = startPosition;
+            UpdateColllisionBounds();
+
+            _collisionControl = new CollisionControl();
         }
         public void Update()
         {
-            // Гравитация всегда действует
-            _position.Y += _gravity;
+            if (IsOnGround == false)
+                _position.Y += _gravity;
+
             //Обработчик нажатий (передвижение, прыжок)
+            UpdateColllisionBounds();
+            _collisionControl.HandleCollisions(this);
             HandleMovement();
+            IsOnGround = false;
+        }
+
+        public void SetPosition(double x, double y)
+        {
+            _position = new Vector(x,y);
+        }
+
+        private void UpdateColllisionBounds()
+        {
+            _colliderBounds = new Dictionary<string, double>()
+            {
+                ["Top"] = _position.Y + _gameObject.Height,
+                ["Bottom"] = _position.Y ,
+                ["Left"] = _position.X,
+                ["Right"] = _position.X + _gameObject.Width
+            };
         }
 
         private void HandleMovement()
         {
-            if (_input == Key.Space && !isJumping)
+            if (_input == Key.Space && !_isJumping && IsOnGround)
             {
                 Jump();
             }
@@ -76,26 +105,27 @@ namespace A_Game.Classes
             }
         }
 
-        private async void Jump() => await Task.Run(() =>DoJump());
+        private async void Jump() => await Task.Run(() => DoJump());
 
         private async void DoJump()
         {
-            isJumping = true;
+            if (_isJumping) return;
 
+            _isJumping = true;
             _gravity = default;//Обнуляем гравитацию
-            while(_gravity < _maxJumpForce)
+
+            while (_gravity < _maxJumpForce)
             {
                 _gravity += _jumpScale;
-                await Task.Delay(16);
+                await Task.Delay(6);
             }
-            //await Task.Delay(100);
-            while(_gravity > _gravityDefault)
+            
+            while (_gravity > _gravityDefault)
             {
                 _gravity -= _jumpScale;
                 await Task.Delay(16);
             }
-
-            isJumping = false;
+            _isJumping = false;
         }
 
 

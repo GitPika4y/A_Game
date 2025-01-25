@@ -28,7 +28,7 @@ namespace A_Game.Classes
             UpdateCanvas();
         }
 
-        public void AddGameObjects(params IGameObject[] gameObjects)
+        public void AddGameObjects(List<IGameObject> gameObjects)
         {
             _gameObjects.AddRange(gameObjects);
             ChildrenAddGameObjects();

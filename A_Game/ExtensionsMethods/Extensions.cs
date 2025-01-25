@@ -10,11 +10,11 @@ namespace A_Game
 {
     internal static class Extensions
     {
-        public static ImageSource GetImageSource(this string imgPath)
+        public static ImageSource GetImageSource(this string mainPath, string imgPath)
         {
             BitmapImage bitmap = new BitmapImage();
             bitmap.BeginInit();
-            bitmap.UriSource = new Uri(imgPath, UriKind.Absolute); // Путь к файлу
+            bitmap.UriSource = new Uri(mainPath+imgPath, UriKind.Absolute); // Путь к файлу
             bitmap.EndInit();
             return bitmap;
         }

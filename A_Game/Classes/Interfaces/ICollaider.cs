@@ -10,10 +10,8 @@ namespace A_Game.Classes.Interfaces
 {
     internal interface ICollider
     {
-        Vector Position { get;}
-        Vector Size { get;}
-
-        bool CheckCollision (ICollider other);
-        void OnCollision(ICollider other);
+        Image GameObject { get; }
+        Vector Position { get; }
+        Dictionary<string, double> ColliderBounds {get;}
     }
 }
