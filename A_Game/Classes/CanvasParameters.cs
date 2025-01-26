@@ -13,14 +13,24 @@ namespace A_Game.Classes
     internal class CanvasParameters : IUpdateHandler
     {
         public Canvas Instance;
-        public Vector Center;
+        public static Vector Center;
+        public static Dictionary<string, double> Bounds;
+        private Player _player;
 
         private List<IGameObject> _gameObjects = new List<IGameObject>();
 
-        public CanvasParameters(Canvas instance) 
+        public CanvasParameters(Canvas instance, Player player) 
         {
             Instance = instance;
-            UpdateCanvasCentre();
+            Bounds = new Dictionary<string, double>{
+                ["Top"] = Instance.ActualHeight,
+                ["Bottom"] = 0,
+                ["Left"] = 0,
+                ["Right"] = instance.ActualWidth,
+            };
+            _player = player;
+            Instance.Children.Add(_player.GameObject);
+            GetCanvasCenter();
         }
 
         public void Update()
@@ -30,16 +40,24 @@ namespace A_Game.Classes
 
         public void AddGameObjects(List<IGameObject> gameObjects)
         {
-            _gameObjects.AddRange(gameObjects);
+            _gameObjects.AddRange(gameObjects); //Добавляем элементы в класс
             ChildrenAddGameObjects();
+            UpdateCanvas();
+        }
+        public void RemoveGameObjects()
+        {
+            foreach (var gameObject in _gameObjects)
+            {
+                Instance.Children.Remove(gameObject.GameObject);
+            }
+            _gameObjects.Clear(); //убираем элементы из класса
         }
 
         private void ChildrenAddGameObjects()
         {
             foreach (var Object in _gameObjects)
             {
-                if(Instance.Children.Contains(Object.GameObject) == false)
-                    Instance.Children.Add(Object.GameObject);
+                Instance.Children.Add(Object.GameObject);
             }
         }
 
@@ -50,8 +68,14 @@ namespace A_Game.Classes
                 Canvas.SetLeft(Object.GameObject, Object.Position.X);
                 Canvas.SetBottom(Object.GameObject, Object.Position.Y);
             }
+            
+            if(_player != null)
+            {
+                Canvas.SetLeft(_player.GameObject, _player.Position.X);
+                Canvas.SetBottom(_player.GameObject, _player.Position.Y);
+            }
         }
-        public void UpdateCanvasCentre()
+        public void GetCanvasCenter()
         {
             // Убедитесь, что размеры доступны
             if (Instance.ActualWidth > 0 && Instance.ActualHeight > 0)

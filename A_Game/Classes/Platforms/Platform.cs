@@ -18,9 +18,9 @@ namespace A_Game.Classes.Platforms
 
 
 
-        private Image _gameObject;
-        private Vector _position;
-        private Dictionary<string, double> _colliderBounds;
+        protected Image _gameObject;
+        protected Vector _position;
+        protected Dictionary<string, double> _colliderBounds;
 
         public Platform(ImageSource gameObject, Vector position)
         {

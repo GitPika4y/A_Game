@@ -25,13 +25,14 @@ namespace A_Game.Classes
         private Vector _position;
         private CollisionControl _collisionControl;
         private Dictionary<string, double> _colliderBounds;
+        private float _collisionOffSet = 5;
 
         //Прыжок
         public bool IsOnGround = false;
         private static readonly float _gravityDefault = -9.8f;
         private float _gravity = _gravityDefault;
         private float _jumpScale = 2;
-        private float _maxJumpForce = 20;
+        private float _maxJumpForce = 16;
         private bool _isJumping = false;
 
         //Ходьба
@@ -81,9 +82,9 @@ namespace A_Game.Classes
             _colliderBounds = new Dictionary<string, double>()
             {
                 ["Top"] = _position.Y + _gameObject.Height,
-                ["Bottom"] = _position.Y ,
-                ["Left"] = _position.X,
-                ["Right"] = _position.X + _gameObject.Width
+                ["Bottom"] = _position.Y,
+                ["Left"] = _position.X + _collisionOffSet,
+                ["Right"] = _position.X + _gameObject.Width - _collisionOffSet,
             };
         }
 
@@ -125,6 +126,7 @@ namespace A_Game.Classes
                 _gravity -= _jumpScale;
                 await Task.Delay(16);
             }
+
             _isJumping = false;
         }
 

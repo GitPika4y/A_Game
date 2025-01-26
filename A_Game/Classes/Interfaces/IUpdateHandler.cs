@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace A_Game.Classes.Interfaces
 {
-    internal interface IUpdateHandler
+    public interface IUpdateHandler
     {
         void Update();
     }

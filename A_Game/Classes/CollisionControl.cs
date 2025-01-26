@@ -13,8 +13,9 @@ namespace A_Game.Classes
 {
     internal class CollisionControl
     {
-        public static List<ICollider> Colliders; // Список всех объектов, участвующих в коллизияхw
+        public static List<ICollider> Colliders = new List<ICollider>(); // Список всех объектов, участвующих в коллизияхw
         private string _collisionDirection;
+
 
         /// <summary>
         /// Проверяет столкновения игрока с другими объектами и обрабатывает их.

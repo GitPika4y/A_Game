@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace A_Game.Classes.Interfaces
 {
-    internal interface IInputHandler
+    public interface IInputHandler
     {
         void OnKeyDown(Key key);
         void OnKeyUp(Key key);
