@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace A_Game.Classes.Platforms
+namespace A_Game.Classes.GameObjects
 {
     internal class Platform : IGameObject, ICollider
     {

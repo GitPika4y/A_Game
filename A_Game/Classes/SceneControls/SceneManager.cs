@@ -1,9 +1,5 @@
 ﻿using A_Game.Classes.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace A_Game.Classes.SceneManager
 {
@@ -15,11 +11,13 @@ namespace A_Game.Classes.SceneManager
         private Player _player;
         private (int x, int y) _currentScene = (0,0);
 
+
         public SceneManager(CanvasParameters canvas, Player player)
         {
             _canvas = canvas;
             _player = player;
             _mainWindow = MainWindow.Instance;
+            CollisionControl.OnPlayerDied += LoadScene;
         }
 
         public void Update()
@@ -66,8 +64,7 @@ namespace A_Game.Classes.SceneManager
 
             if (SceneStorage.Scenes.ContainsKey(targetScene)) // Если сцена существует
             {
-                _currentScene = targetScene;
-                LoadScene(_currentScene); // Загружаем новую сцену
+                LoadScene(targetScene); // Загружаем новую сцену
                 SetPlayerInNewScene(xDirection, yDirection);
             }
             else // Если сцены нет, не даем выйти за пределы текущей сцены
@@ -99,9 +96,10 @@ namespace A_Game.Classes.SceneManager
 
         public void LoadScene( (int x, int y) scene)
         {
+            _currentScene = scene;
+
             _canvas.RemoveGameObjects(); //Удаляем элементы текущей сцена
             _mainWindow.RemoveHandlersAndColliders(); //Удаляем handlers и Colliders
-
 
             var sceneGameObjects = SceneStorage.Scenes[scene];
 
@@ -121,7 +119,6 @@ namespace A_Game.Classes.SceneManager
                     _mainWindow.AddUpdateHandler(updateHandler);
                 if(gameObject is IInputHandler inputHandler)
                     _mainWindow.AddInputHandler(inputHandler);
-
             }
         }
 

@@ -1,22 +1,23 @@
-﻿using A_Game.Classes.Interfaces;
-using System;
+﻿using A_Game.Classes.GameObjects;
+using A_Game.Classes.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace A_Game.Classes
 {
     internal class CanvasParameters : IUpdateHandler
     {
-        public Canvas Instance;
         public static Vector Center;
         public static Dictionary<string, double> Bounds;
-        private Player _player;
+        public static SpawnPoint SpawnPoint;
 
+        public Canvas Instance;
+
+        private Player _player;
+        private SpawnPoint SpawnPointOnCurrentScene;
+        private List<IMovable> _movableGameObjects = new List<IMovable>();//TODO
         private List<IGameObject> _gameObjects = new List<IGameObject>();
 
         public CanvasParameters(Canvas instance, Player player) 
@@ -35,14 +36,19 @@ namespace A_Game.Classes
 
         public void Update()
         {
-            UpdateCanvas();
+            UpdateMovableObjects();
         }
 
         public void AddGameObjects(List<IGameObject> gameObjects)
         {
-            _gameObjects.AddRange(gameObjects); //Добавляем элементы в класс
-            ChildrenAddGameObjects();
-            UpdateCanvas();
+            _gameObjects.AddRange(gameObjects); //Добавляем элементы в лист
+            if(_gameObjects.TryGetObject(out SpawnPointOnCurrentScene))
+            {
+                SpawnPoint = SpawnPointOnCurrentScene;
+            }
+
+            AddGameObjectsToCanvasChildren();
+            DrawGameObjectsOnCanvas();
         }
         public void RemoveGameObjects()
         {
@@ -53,7 +59,7 @@ namespace A_Game.Classes
             _gameObjects.Clear(); //убираем элементы из класса
         }
 
-        private void ChildrenAddGameObjects()
+        private void AddGameObjectsToCanvasChildren()
         {
             foreach (var Object in _gameObjects)
             {
@@ -61,18 +67,24 @@ namespace A_Game.Classes
             }
         }
 
-        public void UpdateCanvas()
+        private void DrawGameObjectsOnCanvas()
         {
-            foreach(var Object in _gameObjects)
+            foreach (var Object in _gameObjects) //Обновление объектов на сцене
             {
                 Canvas.SetLeft(Object.GameObject, Object.Position.X);
                 Canvas.SetBottom(Object.GameObject, Object.Position.Y);
             }
-            
-            if(_player != null)
+        }
+        public void UpdateMovableObjects()
+        {
+            //Обновление игрока
+            Canvas.SetLeft(_player.GameObject, _player.Position.X);
+            Canvas.SetBottom(_player.GameObject, _player.Position.Y);
+
+            //Обновление движущихся элементов
+            foreach (var Object in _movableGameObjects)
             {
-                Canvas.SetLeft(_player.GameObject, _player.Position.X);
-                Canvas.SetBottom(_player.GameObject, _player.Position.Y);
+
             }
         }
         public void GetCanvasCenter()

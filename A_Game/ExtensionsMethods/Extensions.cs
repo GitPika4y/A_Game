@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using A_Game.Classes.Interfaces;
 
 namespace A_Game
 {
@@ -17,6 +18,11 @@ namespace A_Game
             bitmap.UriSource = new Uri(imgPath, UriKind.Relative); // Путь к файлу
             bitmap.EndInit();
             return bitmap;
+        }
+        public static bool TryGetObject<T>(this IEnumerable<IGameObject> gameObjects, out T result) where T : class
+        {
+            result = gameObjects.OfType<T>().FirstOrDefault();
+            return result != null;
         }
     }
 }

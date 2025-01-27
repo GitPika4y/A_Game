@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Numerics;
 using A_Game.Classes.Interfaces;
-using A_Game.Classes.Platforms;
-using System.Windows;
-using System.CodeDom;
+using A_Game.Classes.GameObjects;
 
 namespace A_Game.Classes
 {
@@ -15,6 +9,7 @@ namespace A_Game.Classes
     {
         public static List<ICollider> Colliders = new List<ICollider>(); // Список всех объектов, участвующих в коллизияхw
         private string _collisionDirection;
+        public static event Action<(int, int)> OnPlayerDied;
 
 
         /// <summary>
@@ -27,9 +22,10 @@ namespace A_Game.Classes
 
             foreach (var collider in Colliders)
             {
-                if (collider != player && CheckCollision(player, collider, out _collisionDirection))
+                if (collider != player && CheckCollision(player, collider, out _collisionDirection)) //Произошло столкновение
                 {
                     ProcessCollision(player, collider);
+                    return;
                 }
             }
         }
@@ -85,16 +81,17 @@ namespace A_Game.Classes
         private void ProcessCollision(Player player, ICollider collidedObject)
         {
 
-            if (collidedObject is Platform platform)
+            switch(collidedObject)
             {
-                HandlePlatformCollision(player, platform);
-            }
-            else
-            {
-                // Здесь можно добавить обработку других типов объектов (например, врагов, бонусов и т. д.)
-                HandleGenericCollision(player, collidedObject);
+                case Platform platform:
+                    HandlePlatformCollision(player, platform);
+                    break;
+                case DeathZone deathZone:
+                    HandleDeathZoneCollision(player);
+                    break;
             }
         }
+
 
         /// <summary>
         /// Логика обработки столкновения игрока с платформой.
@@ -118,14 +115,12 @@ namespace A_Game.Classes
             }
             player.IsOnGround = true;
         }
-
-        /// <summary>
-        /// Логика обработки столкновения с любым другим объектом (не платформой).
-        /// </summary>
-        private void HandleGenericCollision(Player player, ICollider collider)
+        private void HandleDeathZoneCollision(Player player)
         {
-            // Здесь можно прописать действия, если игрок столкнулся с чем-то, что не является платформой.
-            // Например, урон игроку, сбор бонуса и т. д.
+            OnPlayerDied?.Invoke(CanvasParameters.SpawnPoint.CurrentScene);
+            player.SetPosition(CanvasParameters.SpawnPoint.Position.X, CanvasParameters.SpawnPoint.Position.Y);
         }
+
+
     }
 }

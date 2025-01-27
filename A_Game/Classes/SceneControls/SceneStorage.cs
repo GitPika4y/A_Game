@@ -1,5 +1,5 @@
 ﻿using A_Game.Classes.Interfaces;
-using A_Game.Classes.Platforms;
+using A_Game.Classes.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,24 +17,32 @@ namespace A_Game.Classes.SceneManager
             /// Y = 0
             [(0, 0)] = new List<IGameObject>
                 {
-                    new Platform(SpritesStorage.MainPlatformSprite, new Vector(0,0)),
+                    new Platform(SpritesStorage.MainPlatform, new Vector(0,0)),
                 },
             [(-1,0)] = new List<IGameObject> 
                 { 
-                    new Platform(SpritesStorage.MainPlatformSprite, new Vector(0,0)),
-
-                    new Platform(SpritesStorage.PlatformSprite, new Vector(400,100)),
-                    new Platform(SpritesStorage.PlatformSprite, new Vector(300, 160)),
-                    new Platform(SpritesStorage.PlatformSprite, new Vector(400, 200)),
-                    new Platform(SpritesStorage.PlatformSprite, new Vector(300, 250)),
-                    new Platform(SpritesStorage.PlatformSprite, new Vector(400, 310)),
+                    //new Platform(SpritesStorage.MainPlatform, new Vector(0,0)),
+                    new DeathZone(SpritesStorage.DeathZone, new Vector(0,0)),
+                    new Platform(SpritesStorage.Platform, new Vector(752,0)),
+                    new Platform(SpritesStorage.Platform, new Vector(300, 160)),
+                    new Platform(SpritesStorage.Platform, new Vector(400, 200)),
+                    new Platform(SpritesStorage.Platform, new Vector(300, 250)),
+                    new Platform(SpritesStorage.Platform, new Vector(400, 310)),
                 },
-            /// Y = 1
+            [(1,0)] = new List<IGameObject> 
+                {
+                    new DeathZone(SpritesStorage.DeathZone, new Vector(0,0)),
+                    new SpawnPoint(SpritesStorage.SpawnPoint,new Vector(0, 32), (1,0)),
+                    new Platform(SpritesStorage.Platform, new Vector(0,0)),
+                },
+
+            ///Y =1 (может быть сделать по локациям)
             [(-1,1)] = new List<IGameObject> 
                 {
-                    new Platform(SpritesStorage.PlatformSprite, new Vector(300,0)),
-                }
+                    new Platform(SpritesStorage.Platform, new Vector(300,0)),
+                },
         };
+
 
 
     }

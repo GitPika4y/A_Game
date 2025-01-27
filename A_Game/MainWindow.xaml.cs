@@ -1,21 +1,10 @@
 ﻿using A_Game.Classes.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using A_Game.Classes;
-using A_Game.Classes.Platforms;
 using A_Game.Classes.SceneManager;
 
 
@@ -60,7 +49,7 @@ namespace A_Game
 
         private void InitializeObjects()
         {
-            _player = new Player(SpritesStorage.PlayerSprite,
+            _player = new Player(SpritesStorage.Player,
                 new Vector(CanvasParameters.Center.X, 80));
 
             _canvas = new CanvasParameters(Canvas, _player);
