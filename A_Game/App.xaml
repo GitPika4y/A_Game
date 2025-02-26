@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:A_Game"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Fonts/HarreeghPoppedCyrillic.ttf #HarreeghPoppedCy"/>
+        </Style>
     </Application.Resources>
 </Application>

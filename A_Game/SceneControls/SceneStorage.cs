@@ -29,7 +29,7 @@ namespace A_Game.Classes.SceneControls
                 new Platform(SpritesStorage.Platform, new Vector(400, 200)),
                 new Platform(SpritesStorage.Platform, new Vector(300, 250)),
                 new Platform(SpritesStorage.Platform, new Vector(400, 310)),
-                new MovingPlatform(SpritesStorage.MovingPlatform, new Vector(CanvasParameters.Center.X - 50, 80), new Vector(300, -20), 3, true),
+                new MovingPlatform(SpritesStorage.MovingPlatform, new Vector(CanvasParameters.Center.X - 50, 80), new Vector(250, -20), 3, true),
             },
             [(1, 0)] = new List<IGameObject>
             {

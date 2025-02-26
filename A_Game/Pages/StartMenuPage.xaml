@@ -31,12 +31,14 @@
                         >
                 <Button
                     x:Name="btnContinue"
+                    FontSize="18"
                     Content="Продолжить"
                     Visibility="Collapsed"
                     Padding="15 5"
                     Click="btnClick_Continue"
                     />
                 <TextBlock
+                    FontSize="14"
                     x:Name="txblock_SaveDate"
                     Visibility="Collapsed"
                     Margin="15 0 0 0"
@@ -44,11 +46,13 @@
             </StackPanel>
 
             <Button
+                FontSize="18"
                 Content="Начать игру"
                 Padding="15 5" Click="btnClick_StartGame"
                 />
 
             <Button
+                FontSize="18"
                 Content="Выйти"
                 Padding="15 5" Click="btnClick_ShutDown"
                 />

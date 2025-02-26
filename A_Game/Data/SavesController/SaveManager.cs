@@ -18,7 +18,7 @@ namespace A_Game.Data.Saves
 	{
 		string path = "";
 
-		public static void SaveGame((double x, double y) playerPosition, (int x, int y) scene)
+		public static void SaveGame()
 		{
 
 			SaveData saveData = new SaveData

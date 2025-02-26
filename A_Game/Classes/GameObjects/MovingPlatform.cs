@@ -36,10 +36,9 @@ namespace A_Game.Classes.GameObjects
         }
 
         private void Move(){
-            Task.Run(() => this.MoveTo(_moveTo, _timeDuration, _isLooping));
+            _ = this.MoveTo(_moveTo, _timeDuration, _isLooping);
             GameObject.UpdateColllisionBounds(Position, out _colliderBounds);
         }
-        
 
 
     }

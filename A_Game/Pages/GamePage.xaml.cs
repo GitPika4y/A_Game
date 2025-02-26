@@ -25,7 +25,7 @@ namespace A_Game.Pages
 	/// </summary>
 	public partial class GamePage : Page
 	{
-		public static bool GameExecuting = false;
+		public static bool IsNewGame = false;
 		public static bool GameLoaded = false;
 		public static GamePage Instance;
 		public static DispatcherTimer GameTimer;
@@ -51,20 +51,21 @@ namespace A_Game.Pages
 
 		private void SetDefault()
 		{
-			GameExecuting = false;
+			IsNewGame = false;
 			GameLoaded = false;
 
 			_player = null;
 			_canvas = null;
 			_sceneManager = null;
+			ProgressEventsData.EventFlags.Clear();
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			Canvas.Focus();
 
-			//Игра не выполняется -> загружаем объекты, таймер
-			if(GameExecuting == false)
+			//Игра не новая -> загружаем объекты, таймер
+			if(IsNewGame == false)
 			{
 				InitializeObjects();
 				InitializeTimer();
@@ -100,7 +101,7 @@ namespace A_Game.Pages
 				LoadSavedData(saveData);
 			}
 
-			GameExecuting = true;
+			IsNewGame = true;
 		}
 		public void LoadSavedData(SaveData saveData)
 		{

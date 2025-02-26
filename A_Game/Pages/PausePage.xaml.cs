@@ -60,9 +60,7 @@ namespace A_Game.Pages
 		{
 			SpawnPoint spawnPoint = CanvasParameters.SpawnPoint;
 
-			SaveManager.SaveGame( 
-				(spawnPoint.Position.X, spawnPoint.Position.Y) ,
-				spawnPoint.CurrentScene);
+			SaveManager.SaveGame();
 
 
 			GameExited?.Invoke(); //Вызываем события на закрытие игры
