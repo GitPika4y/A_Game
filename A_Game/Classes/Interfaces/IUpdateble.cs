@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace A_Game.Classes.Interfaces
 {
-    internal interface IMovable: IGameObject
+    public interface IUpdateble
     {
-        bool IsMoving { get; set; }
-        void SetPosition(double x, double y);
+        void Update();
     }
 }

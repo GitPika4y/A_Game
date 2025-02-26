@@ -16,6 +16,7 @@ namespace A_Game.Classes.GameObjects
         public Vector Position {get;}
         public Dictionary<string, double> ColliderBounds { get; }
 
+
         public DeathZone(ImageSource gameObject, Vector position)
         {
             Position = position;
@@ -33,5 +34,5 @@ namespace A_Game.Classes.GameObjects
                 ["Right"] = position.X + gameObject.Width,
             };
         }
-    }
+	}
 }

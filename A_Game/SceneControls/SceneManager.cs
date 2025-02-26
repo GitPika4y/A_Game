@@ -1,31 +1,39 @@
-﻿using A_Game.Classes.Interfaces;
+﻿using A_Game.Classes.Collisions;
+using A_Game.Classes.Interfaces;
+using A_Game.Pages;
+using System;
 using System.Collections.Generic;
 
-namespace A_Game.Classes.SceneManager
+namespace A_Game.Classes.SceneControls
 {
-    internal class SceneManager : IUpdateHandler
+    internal class SceneManager : IUpdateble
     {
 
         private CanvasParameters _canvas;
-        private MainWindow _mainWindow;
         private Player _player;
-        private (int x, int y) _currentScene = (0,0);
+        private static (int x, int y) _currentScene = (0,0);
 
+        public static event Action SceneChanged;
 
         public SceneManager(CanvasParameters canvas, Player player)
         {
             _canvas = canvas;
             _player = player;
-            _mainWindow = MainWindow.Instance;
-            CollisionControl.OnPlayerDied += LoadScene;
+            PlayerCollisionHandler.OnPlayerDied += LoadSceneOnDied;
         }
 
         public void Update()
         {
-            if (IsPlayerOutOfScene(out int xDirection, out int yDirection))
+			//Отслеживание позиции игрока за выход экрана
+			if (IsPlayerOutOfScene(out int xDirection, out int yDirection)) 
             {
                 TryLoadScene(xDirection, yDirection);
             }
+        }
+
+        public static (int x, int y) GetCurrentScene()
+        {
+            return _currentScene;
         }
 
         private bool IsPlayerOutOfScene(out int xDirection, out int yDirection)
@@ -99,27 +107,17 @@ namespace A_Game.Classes.SceneManager
             _currentScene = scene;
 
             _canvas.RemoveGameObjects(); //Удаляем элементы текущей сцена
-            _mainWindow.RemoveHandlersAndColliders(); //Удаляем handlers и Colliders
 
             var sceneGameObjects = SceneStorage.Scenes[scene];
 
             _canvas.AddGameObjects(sceneGameObjects); //Добавляем новую сцену(элементы на сцену)
-            AddToHandlersAndColliders(sceneGameObjects); //Добавляем Handlers и Colliders
+
+            SceneChanged?.Invoke();
         }
 
-
-        private void AddToHandlersAndColliders(List<IGameObject> gameObjects)
+        public void LoadSceneOnDied()
         {
-
-            foreach (var gameObject in gameObjects)
-            {
-                if(gameObject is ICollider collider)
-                    CollisionControl.Colliders.Add(collider);
-                if(gameObject is IUpdateHandler updateHandler)
-                    _mainWindow.AddUpdateHandler(updateHandler);
-                if(gameObject is IInputHandler inputHandler)
-                    _mainWindow.AddInputHandler(inputHandler);
-            }
+            LoadScene(CanvasParameters.SpawnPoint.CurrentScene);
         }
 
 

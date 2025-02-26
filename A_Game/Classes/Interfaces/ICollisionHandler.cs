@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace A_Game.Classes.Interfaces
 {
-    internal interface IMovable: IGameObject
-    {
-        bool IsMoving { get; set; }
-        void SetPosition(double x, double y);
-    }
+	internal interface ICollisionHandler
+	{
+		void ProcessCollision(ICollider obj, ICollider collidedObject, string collisionDirection);
+	}
 }

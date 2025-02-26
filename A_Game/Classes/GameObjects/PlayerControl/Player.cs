@@ -1,4 +1,8 @@
-﻿using A_Game.Classes.Interfaces;
+﻿using A_Game.Classes.Collisions;
+using A_Game.Classes.GameObjects.Pickups;
+using A_Game.Classes.GameObjects.PlayerControl;
+using A_Game.Classes.Interfaces;
+using A_Game.Data.ProgressEvents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +17,7 @@ using System.Windows.Shell;
 
 namespace A_Game.Classes
 {
-    internal class Player : IInputHandler, IUpdateHandler, IGameObject, ICollider
+    public class Player : IInputable, IUpdateble, IGameObject, ICollider
     {
         public Image GameObject => _gameObject;
         public Vector Position => _position;
@@ -23,7 +27,7 @@ namespace A_Game.Classes
         //Interfaces realisation
         private Image _gameObject;
         private Vector _position;
-        private CollisionControl _collisionControl;
+        private PlayerCollisionHandler _collisionHandler;
         private Dictionary<string, double> _colliderBounds;
         private float _collisionOffSet = 5;
 
@@ -37,6 +41,7 @@ namespace A_Game.Classes
 
         //Ходьба
         private float moveSpeed = 5;
+        public int _moveDirection = 1;
 
         //Inputs
         private Key? _input;
@@ -46,29 +51,49 @@ namespace A_Game.Classes
             [Key.A] = false
         };
 
-        public Player(ImageSource gameObject, Vector startPosition)
+        //ATTACK
+        private bool _isAttacking = false;
+        private Dictionary<Key?, IAttack> _attackButtons = new Dictionary<Key?, IAttack>() 
         {
-            _position = startPosition;
+            [Key.J] = null,
+            [Key.K] = null,
+        };
+
+
+        public Player(Vector startPosition)
+        {
+            var image = SpritesStorage.Player;
             _gameObject = new Image
             {
-                Source = gameObject,
-                Width = gameObject.Width,
-                Height = gameObject.Height,
+                Source = image,
+                Width = image.Width,
+                Height = image.Height,
             };
+            _position = startPosition;
 
-            UpdateColllisionBounds();
+            //Устанавливаем игрока на передний план навсегда
+            Panel.SetZIndex(_gameObject, 1);
 
-            _collisionControl = new CollisionControl();
+            _collisionHandler = new PlayerCollisionHandler();
+
+            _gameObject.UpdateColllisionBounds(Position, out _colliderBounds,_collisionOffSet);
+
+            ProgressEventsData.OnLoadEventFlags += CheckAttackButtons;
         }
-        public void Update()
+
+		
+
+		public void Update()
         {
             if (IsOnGround == false)
                 _position.Y += _gravity;
 
-            //Обработчик нажатий (передвижение, прыжок)
-            UpdateColllisionBounds();
-            _collisionControl.HandleCollisions(this);
-            HandleMovement();
+            
+            GameObject.UpdateColllisionBounds(Position, out _colliderBounds, _collisionOffSet);
+
+            CollisionManager.HandleCollisions(this, _collisionHandler);
+
+            HandleInputs();
             IsOnGround = false;
         }
 
@@ -76,20 +101,9 @@ namespace A_Game.Classes
         {
             _position = new Vector(x,y);
         }
-
-        private void UpdateColllisionBounds()
+        private void HandleInputs()
         {
-            _colliderBounds = new Dictionary<string, double>()
-            {
-                ["Top"] = _position.Y + _gameObject.Height,
-                ["Bottom"] = _position.Y,
-                ["Left"] = _position.X + _collisionOffSet,
-                ["Right"] = _position.X + _gameObject.Width - _collisionOffSet,
-            };
-        }
 
-        private void HandleMovement()
-        {
             if (_input == Key.Space && !_isJumping && IsOnGround)
             {
                 Jump();
@@ -98,11 +112,22 @@ namespace A_Game.Classes
             if (_holdingInputs[Key.A])
             {
                 _position.X -= moveSpeed;
+                _moveDirection = -1;
             }
             // Движение вправо: клавиша "D" удерживается
             if (_holdingInputs[Key.D])
             {
                 _position.X += moveSpeed;
+                _moveDirection = 1;
+            }
+            if(_input != null &&
+                _isAttacking == false &&
+                _attackButtons.TryGetValue(_input, out var attack)
+                )
+
+            {
+                if(attack != null)
+                    Attack(attack);
             }
         }
 
@@ -131,8 +156,42 @@ namespace A_Game.Classes
         }
 
 
-        //Inputs Methods (from IInputHandler)
-        public void OnKeyDown(Key key)
+		private void Attack(IAttack attack)
+		{
+			if (attack.IsAttacking) return; // Если эта атака уже выполняется, ничего не делаем
+
+			_ = attack.Execute(_moveDirection); // Запускаем атаку в отдельном потоке
+		}
+
+        public void SetNewAttack(Pickup attackPickup)
+        {
+            switch (attackPickup)
+            {
+				case var n when n is SwordPickup:
+					_attackButtons[Key.J] = new Melee(this);
+					break;
+				case var n when n is BowPickup:
+                    _attackButtons[Key.K] = new Range(this);
+                    break;
+                
+            }
+        }
+		private void CheckAttackButtons()
+		{
+			if (ProgressEventsData.GetEvent(Events.SwordEquipped))
+			{
+				_attackButtons[Key.J] = new Melee(this);
+			}
+			if (ProgressEventsData.GetEvent(Events.BowEquipped))
+			{
+				_attackButtons[Key.K] = new Range(this);
+			}
+
+            ProgressEventsData.OnLoadEventFlags -= CheckAttackButtons; //Отписываемся от этого события
+		}
+
+		//Inputs Methods (from IInputHandler)
+		public void OnKeyDown(Key key)
         {
             _input = key;
 

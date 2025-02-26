@@ -14,6 +14,22 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>D:\_GamesData\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +49,18 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>F630145D69E327F7AF4F9DD1D2AF9034C04B51CB</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>A_Game_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -64,26 +92,61 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Classes\CanvasParameters.cs" />
+    <Compile Include="Classes\GameObjects\Pickups\BowPickup.cs" />
+    <Compile Include="Classes\GameObjects\Pickups\SwordPickup.cs" />
+    <Compile Include="Classes\GameObjects\Pickups\Pickup.cs" />
+    <Compile Include="Classes\Helpers\InteractableHelper.cs" />
+    <Compile Include="Classes\CollisionsControls\PlayerCollisionHandler.cs" />
+    <Compile Include="Classes\CollisionsControls\RangeAttackCollisionHandler.cs" />
+    <Compile Include="Classes\GameObjects\MovingPlatform.cs" />
+    <Compile Include="Classes\GameObjects\PlayerControl\Range.cs" />
+    <Compile Include="Classes\GameObjects\PlayerControl\Melee.cs" />
     <Compile Include="Classes\GameObjects\SpawnPoint.cs" />
     <Compile Include="Classes\GameObjects\DeathZone.cs" />
     <Compile Include="Classes\Interfaces\IMovable.cs" />
-    <Compile Include="Classes\SpritesStorage.cs" />
-    <Compile Include="Classes\CollisionControl.cs" />
+    <Compile Include="Classes\Interfaces\IAttack.cs" />
+    <Compile Include="Classes\Interfaces\ICollisionHandler.cs" />
+    <Compile Include="Data\ProgressEvents\ProgressEvents.cs" />
+    <Compile Include="Sprites_Animations\SpritesStorage.cs" />
+    <Compile Include="Classes\CollisionsControls\CollisionManager.cs" />
     <Compile Include="Classes\Interfaces\IGameObject.cs" />
     <Compile Include="Classes\Interfaces\ICollaider.cs" />
-    <Compile Include="Classes\Interfaces\IUpdateHandler.cs" />
-    <Compile Include="Classes\Interfaces\IInputHandler.cs" />
+    <Compile Include="Classes\Interfaces\IUpdateble.cs" />
+    <Compile Include="Classes\Interfaces\IInputable.cs" />
     <Compile Include="Classes\GameObjects\Platform.cs" />
-    <Compile Include="Classes\Player.cs" />
-    <Compile Include="Classes\SceneControls\SceneStorage.cs" />
-    <Compile Include="Classes\SceneControls\SceneManager.cs" />
+    <Compile Include="Classes\GameObjects\PlayerControl\Player.cs" />
+    <Compile Include="SceneControls\SceneStorage.cs" />
+    <Compile Include="SceneControls\SceneManager.cs" />
+    <Compile Include="Data\ProgressEvents\ProgressEventsData.cs" />
+    <Compile Include="Data\SavesController\SaveManager.cs" />
     <Compile Include="ExtensionsMethods\Extensions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\GamePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PausePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\StartMenuPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pages\GamePage.xaml.cs">
+      <DependentUpon>GamePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PausePage.xaml.cs">
+      <DependentUpon>PausePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\StartMenuPage.xaml.cs">
+      <DependentUpon>StartMenuPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -101,6 +164,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="A_Game_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -108,6 +172,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

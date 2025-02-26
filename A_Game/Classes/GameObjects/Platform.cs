@@ -33,13 +33,7 @@ namespace A_Game.Classes.GameObjects
                 Height = gameObject.Height,
             };
 
-            _colliderBounds = new Dictionary<string, double>()
-            {
-                ["Top"] = _position.Y + _gameObject.Height,
-                ["Bottom"] = _position.Y ,
-                ["Left"] = _position.X,
-                ["Right"] = _position.X + _gameObject.Width
-            };
+            GameObject.UpdateColllisionBounds(Position, out _colliderBounds);
         }
 
 

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace A_Game.Classes.Interfaces
+namespace A_Game.Data.ProgressEvents
 {
-    public interface IUpdateHandler
-    {
-        void Update();
-    }
+	public enum Events 
+	{
+		BowEquipped,
+		SwordEquipped,
+	}
+
 }

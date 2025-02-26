@@ -9,11 +9,9 @@
         Title="MainWindow" 
         Height="450" Width="800"
         ResizeMode="NoResize"
-        PreviewKeyDown="InputGetKeyDown"
-        PreviewKeyUp="InputGetKeyUp"
-        Loaded="Window_Loaded"
         >
+    
     <Grid>
-        <Canvas x:Name="Canvas"/>
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"></Frame>
     </Grid>
 </Window>

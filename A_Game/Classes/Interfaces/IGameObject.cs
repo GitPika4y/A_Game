@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace A_Game.Classes.Interfaces
 {
-    internal interface IGameObject
+    public interface IGameObject
     {
         Image GameObject { get; }
         Vector Position { get; }

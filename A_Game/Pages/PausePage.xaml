@@ -1,0 +1,51 @@
+﻿<Page x:Class="A_Game.Pages.PausePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:A_Game.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Page2"
+      
+      PreviewKeyDown="Input_GetKeyDown"
+      Focusable="True"
+      
+      FocusVisualStyle="{x:Null}"
+      >
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock 
+            Text="Пауза"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="48"
+                   />
+
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            >
+            <Button
+                Padding="15 5"
+                Content="Продолжить" 
+                Click="btnClick_ResumeGame"/>
+            <Button
+                Padding="15 5"
+                Content="Сохранить и выйти"
+                Click="btnClick_SaveAndExit"
+                />
+            <Button
+                Padding="15 5"
+                Content="Выйти"
+                Click="btnClick_Exit"
+                />
+        </StackPanel>
+    </Grid>
+</Page>
